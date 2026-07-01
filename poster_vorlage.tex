@@ -1,0 +1,406 @@
+% ============================================================
+%  University of Hohenheim – Scientific Poster Template (A0)
+%  Matches the official two-column poster layout exactly:
+%    - White top bar with logos
+%    - Navy header block (title left, authors right)
+%    - Yellow-green accent strip
+%    - Two-column body (left: text sections, right: figures)
+%    - Light grey footer (contact left, partner logos right)
+%
+%  Compile with:  pdflatex hohenheim_poster_template.tex
+%  Replace every \placeholder{...} with real content/images.
+% ============================================================
+
+\documentclass[final]{beamer}
+
+\usepackage[
+  orientation=portrait,
+  size=a0,          % A0 = 841 x 1189 mm
+  scale=1.4         % base font scale; adjust if text is too big/small
+]{beamerposter}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman,english]{babel}
+\usepackage{lmodern}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{multicol}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{microtype}
+\usepackage{caption}
+\usepackage{calc}
+\usepackage{array}
+\usepackage{ragged2e}
+
+
+
+
+
+
+\captionsetup{
+  font=small,
+  labelfont={bf},
+  justification=raggedright,
+  singlelinecheck=false
+}
+
+% ── Hohenheim Colours ─────────────────────────────────────────
+\definecolor{HohenheimNavy}{HTML}{004178}        % header background
+\definecolor{HohenheimGreen}{cmyk}{0.5,0.2,1,0}  % section headings & accent strip
+\definecolor{HohenheimLightBlue}{HTML}{EBF2F5}   % subtle tint if needed
+\definecolor{HohenheimGrey}{HTML}{F2F2F2}         % footer background
+\definecolor{HohenheimDark}{HTML}{3C3C3B}         % body text
+\definecolor{HohenheimAuthorLabel}{HTML}{AFC80A}  % "AUTHOREN" label (yellow-green)
+
+% Secondary colours (use sparingly)
+\definecolor{Hohenheim_darkgreen}{cmyk}{1.0,0.55,0.8,0}
+\definecolor{Hohenheim_red}{cmyk}{0.55,0.95,0.75,0}
+\definecolor{Hohenheim_lightblue}{cmyk}{0.6,0.1,0.1,0}
+\definecolor{Hohenheim_midgray}{cmyk}{0.55,0.4,0.45,0}
+\definecolor{Hohenheim_glow_darkgreen}{cmyk}{0.9,0,1,0}
+\definecolor{Hohenheim_glow_yellow}{cmyk}{0,0.2,1,0}
+\definecolor{Hohenheim_glow_red}{cmyk}{0.2,1,1,0}
+\definecolor{Hohenheim_glow_lightblue}{cmyk}{1,0,0,0}
+
+% ── Strip all beamer decoration ───────────────────────────────
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{footline}{}
+\setbeamerfont{normal text}{family=\sffamily}
+\setbeamercolor{background canvas}{bg=white}
+
+% ── Footer pinned to absolute bottom of page ─────────────────
+\setbeamertemplate{footline}{%
+{\color{HohenheimGreen}\rule{\paperwidth}{2pt}}
+  \noindent
+  \colorbox{HohenheimGrey}{%
+    \begin{minipage}[c][95mm][c]{\paperwidth}
+      \hspace{\outermargin}%
+      % ── CONTACT ───────────────────────────────────────────
+      \begin{minipage}[c]{0.30\bodywidth}
+        {\color{HohenheimGreen}\bfseries\large CONTACT}\\[3mm]
+        {\color{HohenheimDark}\small
+          Firstname Lastname\\
+          Platzhalter-Straße 5\\
+          70599 Stuttgart, Germany\\
+          firstname.lastname@uni-hohenheim.de%
+        }
+      \end{minipage}%
+      \hspace{0.05\bodywidth}%
+      % ── PARTNER logos ─────────────────────────────────────
+      \begin{minipage}[c]{0.60\bodywidth}
+        {\color{HohenheimGreen}\bfseries\large PARTNER}\\[4mm]
+        % Replace each \placeholder with:
+        %   \includegraphics[height=22mm]{logo_partner1.pdf}
+        \placeholder[40mm]{22mm}{Partner 1}\hspace{6mm}%
+        \placeholder[40mm]{22mm}{Partner 2}\hspace{6mm}%
+        \placeholder[40mm]{22mm}{Partner 3}\hspace{6mm}%
+        \placeholder[40mm]{22mm}{Partner 4}%
+      \end{minipage}%
+    \end{minipage}%
+  }%
+}
+
+
+
+% ── Helper: placeholder box ───────────────────────────────────
+% Usage: \placeholder[width]{height}{label}
+\newcommand{\placeholder}[3][\linewidth]{%
+  \fbox{%
+    \parbox[c][#2][c]{#1}{%
+      \centering\color{gray}\small #3%
+    }%
+  }%
+}
+
+% ── Section heading (green bold + rule) ───────────────────────
+\newcommand{\postersection}[1]{%
+  \vspace{4mm}%
+  {\color{HohenheimGreen}\bfseries\large #1}\\[-1mm]%
+  {\color{HohenheimGreen}\rule{\linewidth}{1.5pt}}%
+  \vspace{2mm}%
+}
+
+% ── Sub-section heading ───────────────────────────────────────
+\newcommand{\postersubsec}[1]{%
+  \smallskip%
+  {\bfseries #1}%
+  \smallskip%
+}
+
+% ── Dimensions ────────────────────────────────────────────────
+\newlength{\outermargin}  \setlength{\outermargin}{18mm}
+\newlength{\colsep}       \setlength{\colsep}{10mm}
+\newlength{\bodywidth}
+\setlength{\bodywidth}{\paperwidth}
+\addtolength{\bodywidth}{-2\outermargin}
+
+% Two content columns: left 40%, right 57%
+\newlength{\leftcolwidth}
+\newlength{\rightcolwidth}
+\setlength{\leftcolwidth}{0.50\bodywidth}
+\setlength{\rightcolwidth}{0.47\bodywidth}
+
+% ============================================================
+\begin{document}
+\begin{frame}[t]{}
+
+% ────────────────────────────────────────────────────────────
+%  TOP BAR  – white, logos left and right
+% ────────────────────────────────────────────────────────────
+\begin{beamercolorbox}[wd=\paperwidth, ht=52mm, dp=2mm]{white}
+  \hspace{\outermargin}%
+  \begin{minipage}[c][52mm][c]{\bodywidth}
+    % ── University of Hohenheim logo (left) ─────────────────
+    \includegraphics[height=32mm]{UH_Logo_Blau.pdf}
+%     \placeholder[90mm]{32mm}{University of Hohenheim Logo}%
+    \hfill
+    % ── Partner logo (right) ────────────────────────────────
+    % Replace with:  \includegraphics[height=24mm]{logo_partner.pdf}
+    \placeholder[80mm]{24mm}{Partner University Logo}%
+  \end{minipage}
+\end{beamercolorbox}
+
+% Thin rule below logo bar
+{\color{HohenheimGrey}\rule{\paperwidth}{1.5pt}}
+
+% ────────────────────────────────────────────────────────────
+%  HEADER BLOCK
+%  - Full-width navy background (no left margin)
+%  - Yellow-green title box overlaid on left ~63%, inset from
+%    left edge, with top/bottom navy gaps visible
+%  - Title text in navy blue inside the green box
+%  - "AUTHOREN" label + authors in white on the right
+% ────────────────────────────────────────────────────────────
+\noindent\hspace{-\outermargin}%  push back to paper edge
+\begin{tikzpicture}
+  % Navy rectangle — full paper width, no margin
+  \fill[HohenheimNavy] (0,0) rectangle (\paperwidth, 120mm);
+
+  % Yellow-green title box — starts at left margin, leaves
+  % ~10 mm navy gap top and bottom, ends at ~63% of paper width
+  \fill[HohenheimGreen!50]
+    (\outermargin+10mm, -15mm) rectangle (0.635\paperwidth, 110mm);
+
+  % ── Title text (navy on green) ────────────────────────────
+  \node[anchor=west, text width={0.635\paperwidth - \outermargin - 12mm},
+        inner sep=80pt, align=left]
+    at (\outermargin+10mm, 60mm)
+  {%
+    \color{HohenheimNavy}\bfseries\fontsize{62}{72}\selectfont
+    Your Poster Title\\Goes Here%
+  };
+
+  % ── "AUTHOREN" label ──────────────────────────────────────
+  \node[anchor=north west, inner sep=0pt]
+    at (0.67\paperwidth, 110mm)
+  {%
+    \color{HohenheimAuthorLabel}\bfseries\fontsize{22}{24}\selectfont
+    AUTHOREN%
+  };
+
+
+  % ── Author list ───────────────────────────────────────────
+  \node[anchor=north west, text width=0.29\paperwidth,
+        inner sep=0pt, align=left]
+    at (0.67\paperwidth, 96mm)
+  {%
+    \color{white}\fontsize{16}{22}\selectfont
+    \textbf{A. Author$^{1}$, B. Author$^{1}$, C. Author$^{2}$}\\[3mm]
+    \textbf{D. Author}$^{2}$ (Institute of …,\\
+    University of Hohenheim, Germany)%
+  };
+\end{tikzpicture}
+
+% ────────────────────────────────────────────────────────────
+%  YELLOW-GREEN ACCENT STRIP  (thin bar directly below header)
+% ────────────────────────────────────────────────────────────
+{\color{HohenheimGreen}\rule{\paperwidth}{7pt}}
+
+\vspace{12mm}
+
+% ────────────────────────────────────────────────────────────
+%  MAIN BODY  – two columns
+% ────────────────────────────────────────────────────────────
+\noindent\hspace{\outermargin}%
+%
+% ── LEFT COLUMN: numbered text sections ──────────────────────
+\begin{minipage}[t]{\leftcolwidth}
+\color{HohenheimDark}
+
+  \postersection{1.~~Einführung}
+
+  Replace this paragraph with your introduction. Motivate the research
+  question, describe the study system, and state the main objective clearly.
+  Aim for 3–5 sentences that give a reader unfamiliar with your topic enough
+  background to follow the poster.
+
+  \vspace{8mm}
+
+  \postersection{2.~~Material und Methoden}
+
+  \postersubsec{Feld:}
+
+  Describe the field trial setup here. Genetic resources and breeding lines
+  are grown between infection rows of a susceptible reference variety and
+  assessed regularly. Reference figures in the right column (Abb.~1).
+
+  \vspace{4mm}
+  \postersubsec{Resistenztests:}
+
+  Describe laboratory resistance tests. Young plants are raised under
+  controlled conditions, artificially inoculated and examined for disease
+  symptoms. DNA analyses using qPCR are carried out on mature and freshly
+  expanded leaves to quantify pathogen presence and understand colonisation
+  behaviour.
+
+  \vspace{8mm}
+
+  \postersection{3.~~Ergebnisse}
+
+  \postersubsec{Feld:}
+
+  Summarise key field results in 1–2 sentences. State whether complete
+  resistance was found and note contributing factors.
+
+  \vspace{4mm}
+  \postersubsec{Resistenztests:}
+
+  First result finding: describe what the qPCR analysis revealed compared
+  to visual disease scoring (Abb.~3 A and B).
+
+  \vspace{3mm}
+  Second result finding: state which breeding line or genotype showed higher
+  resistance and how it compares to reference varieties (Abb.~3 B, left).
+
+  \vspace{3mm}
+  Third result finding: describe any unexpected colonisation pattern found,
+  e.g.\ endophytic behaviour in early infection stages (Abb.~3 B, right).
+
+  \vspace{8mm}
+
+  \postersection{4.~~Ausblick}
+
+  \postersubsec{Feld:}
+
+  Describe the next field steps. State what will be done with the top
+  10\,\% of selected accessions.
+
+  \vspace{4mm}
+  \postersubsec{Resistenztests:}
+
+  Describe planned molecular or laboratory follow-up work and how it will
+  support field selection in the next season.
+
+  \vspace{10mm}
+
+  % Affiliation block at bottom of left column
+  {\small
+    \textbf{A. Author, B. Author, C. Author}\\
+    (Department of …, Research Institute of …, Country)\\[2mm]
+    \textbf{D. Author}\\
+    (Institute of …, University of Hohenheim, Germany)%
+  }
+
+\end{minipage}%
+\hspace{\colsep}%
+%
+% ── RIGHT COLUMN: figures ─────────────────────────────────────
+\begin{minipage}[t]{\rightcolwidth}
+
+  % ── Figure 1: photo panel ───────────────────────────────
+  % Replace with:  \includegraphics[width=\linewidth]{fig1_photos.pdf}
+  \placeholder[\rightcolwidth]{72mm}{%
+    Abb. 1 – Photo panel\\[2mm]
+    \texttt{\textbackslash includegraphics[width=\textbackslash linewidth]\{fig1\_photos.pdf\}}%
+  }
+  \vspace{2mm}
+  \captionof{figure}{\color{HohenheimDark}%
+    Abb. 1: Top: healthy green pods (left) and severely diseased green pods
+    with near-complete yield loss (right). Bottom: disease scoring
+    distribution (July 2017) of 216 genebank accessions relative to the
+    susceptible reference variety. Orange shading marks the most resistant
+    10\,\%.}
+
+  \vspace{9mm}
+
+  % ── Figure 2: bar chart ────────────────────────────────
+  % Replace with:  \includegraphics[width=\linewidth]{fig2_chart.pdf}
+  \placeholder[\rightcolwidth]{70mm}{%
+    Abb. 2 – Bar chart / qPCR result 1\\[2mm]
+    \texttt{\textbackslash includegraphics[width=\textbackslash linewidth]\{fig2\_chart.pdf\}}%
+  }
+  \vspace{2mm}
+  \captionof{figure}{\color{HohenheimDark}%
+    Abb. 2: Caption for figure 2. Describe the axes, units, experimental
+    groups and what statistical letters indicate
+    (HSD, $p \leq 0.05$). Error bars = SE.}
+
+  \vspace{9mm}
+
+  % ── Figure 3: second photo panel ──────────────────────
+  % Replace with:  \includegraphics[width=\linewidth]{fig3_photos.pdf}
+  \placeholder[\rightcolwidth]{65mm}{%
+    Abb. 3 – Photo panel 2\\[2mm]
+    \texttt{\textbackslash includegraphics[width=\textbackslash linewidth]\{fig3\_photos.pdf\}}%
+  }
+  \vspace{2mm}
+  \captionof{figure}{\color{HohenheimDark}%
+    Abb. 3: Left: untreated leaf. Centre: inoculated leaf. Right: newly
+    formed leaf after inoculation.}
+
+  \vspace{9mm}
+
+  % ── Figure 4: second chart ─────────────────────────────
+  % Replace with:  \includegraphics[width=\linewidth]{fig4_chart.pdf}
+  \placeholder[\rightcolwidth]{70mm}{%
+    Abb. 4 – Bar chart / qPCR result 2\\[2mm]
+    \texttt{\textbackslash includegraphics[width=\textbackslash linewidth]\{fig4\_chart.pdf\}}%
+  }
+  \vspace{2mm}
+  \captionof{figure}{\color{HohenheimDark}%
+    Abb. 4: A = visual disease scoring, mean score difference to control.
+    B = spore equivalents per mg fresh weight (qPCR), difference to control
+    (5-week-old plants, 22~days post inoculation, $n=5$). Different letters
+    indicate significant differences (HSD, $p \leq 0.05$).
+    Error bars = SE.}
+
+\end{minipage}
+
+
+
+
+\end{frame}
+\end{document}
+
+% ============================================================
+%  QUICK REFERENCE
+% ─────────────────────────────────────────────────────────────
+%  Compile:   pdflatex hohenheim_poster_template.tex
+%
+%  LOGOS (top bar + footer)
+%    Replace \placeholder[w]{h}{label} with:
+%    \includegraphics[height=Xmm]{your_logo.pdf}
+%
+%  FIGURES (right column)
+%    Replace \placeholder[\rightcolwidth]{h}{label} with:
+%    \includegraphics[width=\linewidth]{your_figure.pdf}
+%
+%  COLUMN WIDTHS
+%    Change the 0.40 / 0.57 fractions for \leftcolwidth /
+%    \rightcolwidth near the top of the document.
+%
+%  COLOURS
+%    \color{HohenheimNavy}         dark blue  #004178
+%    \color{HohenheimGreen}        yellow-green accent
+%    \color{HohenheimAuthorLabel}  bright label yellow #AFC80A
+%    \color{HohenheimDark}         near-black body text
+%    \color{HohenheimGrey}         footer background
+% ============================================================
